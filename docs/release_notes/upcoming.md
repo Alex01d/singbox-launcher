@@ -4,6 +4,8 @@
 
 ## EN
 ### Highlights
+- **AWG backup import:** atomic marker3 backups now pass the complete import path, preserve existing node identity and flags, and appear in supported-format discovery. Invalid requirements and future markers are rejected before state changes. Ordinary backups still use marker2.
+- **Linux engineering: embedded Tailscale AWG2/AWG3.** Optional Headscale auth key, profile import/edit/export, configured/applied status and persistent protected network/DNS rules. Unsupported cores reject the entire build; atomic transport backups use marker 3. An isolated x11 test bundle includes AWG with parallel VLESS and UDP/DERP proxy carriers. Manual Linux acceptance and mobile integration remain pending.
 - **SRS rules with many links: dead links are named, not hidden.** The real cause of "more than 7 SRS links fail" was a link that returns HTTP 404, not the group deadline: the download stopped at the first broken file and the dialog only said "see the log". Now every file of the rule is downloaded, and if some links do not exist the dialog lists them by file name so they can be removed from the rule.
 - **Troubleshooting: Linux password prompts list the fifth Polkit action.** The core (lx.24+) flushes the `systemd-resolved` cache on a network change, which is a fifth Polkit action, `org.freedesktop.resolve1.flush-caches`. The troubleshooting guide now lists all five and notes that a rule made from the original four-action recipe in issue #126 needs it added.
 - **Troubleshooting: Linux `system` TUN stack blocked by firewalld.** When the VPN is up but nothing loads and `gvisor` works, a host firewall drops the local TCP forwarder of the `system` stack. The troubleshooting guide now has the narrow `firewall-cmd` rule (issue #129).
@@ -30,6 +32,8 @@
 
 ## RU
 ### Основное
+- **Импорт AWG-бэкапов:** marker3 теперь проходит полный импорт с сохранением identity и flags существующего узла и отражается в списке поддерживаемых форматов. Неверные requirements и будущие версии отклоняются до изменения состояния. Обычные бэкапы остаются marker2.
+- **Linux engineering: AWG2/AWG3 в embedded Tailscale.** Необязательный auth key Headscale, импорт/редактирование/экспорт профиля, configured/applied status и сохраняемые protected CIDR/private DNS guards. Неподдерживаемое ядро блокирует применение целиком; atomic backup использует marker 3. Отдельный x11 bundle поддерживает параллельный VLESS и вложенные UDP/DERP carriers. Ручная приёмка Linux и mobile интеграция впереди.
 - **SRS-правило с множеством ссылок: мёртвые ссылки называются поимённо.** Настоящая причина «больше 7 SRS-ссылок не работает» — ссылка, отвечающая HTTP 404, а не дедлайн группы: загрузка вставала на первом битом файле, а окно писало только «подробности в логе». Теперь качаются все файлы правила, и если каких-то ссылок не существует, окно перечисляет их по имени файла, чтобы их убрали из правила.
 - **Troubleshooting: в запросах пароля на Linux появилось пятое действие Polkit.** Ядро (lx.24+) сбрасывает кэш `systemd-resolved` при смене сети — это пятое действие Polkit, `org.freedesktop.resolve1.flush-caches`. В руководстве по диагностике теперь перечислены все пять и сказано, что правило по первой версии рецепта из issue #126 нужно дополнить.
 - **Troubleshooting: стек `system` на Linux режет firewalld.** Когда VPN поднят, но ничего не грузится, а с `gvisor` работает, хост-файрвол рубит локальный TCP-форвардер стека `system`. В руководстве по диагностике появилось точечное правило `firewall-cmd` (issue #129).

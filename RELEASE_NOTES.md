@@ -1,5 +1,10 @@
 # Release Notes
 
+Engineering / SPEC 175: Linux AWG2/AWG3 для embedded Tailscale, Headscale login
+без обязательного auth key, profile import/edit/export и protected CIDR/DNS
+preset. Нужен core с with_tailscale_awg; backup с новой функцией использует
+marker 3. Отдельный тестовый bundle ожидает ручной приёмки; это ещё не релиз.
+
 Полный черновик следующего релиза: [docs/release_notes/upcoming.md](docs/release_notes/upcoming.md)
 
 ---

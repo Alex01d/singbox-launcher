@@ -133,6 +133,9 @@ func Export10(s *state.State, opts ExportOptions) (*Backup10, []Warning, error) 
 	}
 	b.Warp = exportWarp(s)
 
+	if err := markAtomicBackup(b); err != nil {
+		return nil, nil, err
+	}
 	return b, warnings, nil
 }
 

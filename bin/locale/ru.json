@@ -6004,5 +6004,30 @@
   },
   "Fixed IP: %s": {
     "value": "Фиксированный IP: %s"
-  }
+  },
+  "Optional profile label": "Необязательная метка профиля",
+  "Profile label": "Метка профиля",
+  "AWG parameters (JSON)": "Параметры AWG (JSON)",
+  "Tailscale peer transport": "Транспорт пиров Tailscale",
+  "Import profile": "Импорт профиля",
+  "Export profile": "Экспорт профиля",
+  "Edit AWG profile": "Редактировать профиль AWG",
+  "AWG profile": "Профиль AWG",
+  "Both peers must use a compatible profile. Exported profiles may contain a shared key; they never include this device's identity.": "Профили обоих пиров должны быть совместимы. Экспорт может содержать общий ключ; identity этого устройства в него не входит.",
+  "Peer transport: configured %s, applied %s": "Транспорт пиров: настроен %s, применён %s",
+  "AWG profile: %s": "Профиль AWG: %s",
+  "Profile fingerprint: %s": "Отпечаток профиля: %s",
+  "Transport configuration does not prove peer reachability.": "Применение профиля не доказывает доступность пира.",
+  "Protected Tailscale networks": "Защищённые сети Tailscale",
+  "Tailscale endpoint": "Узел Tailscale",
+  "Protected CIDRs": "Защищённые CIDR",
+  "Private DNS suffixes": "Частные DNS-суффиксы",
+  "Keep these networks and private names on the selected Tailscale endpoint, including before login and during outages. Choose the endpoint explicitly.": "Направлять эти сети и частные имена только в выбранный узел Tailscale, включая состояние до входа и сбои. Укажите узел явно.",
+  "Select the Tailscale endpoint that owns these networks.": "Выберите узел Tailscale, обслуживающий эти сети.",
+  "CIDR networks that must never fall back to direct or VLESS.": "CIDR-сети, которые не должны уходить в direct или VLESS при сбое.",
+  "Resolve these names through the selected endpoint without public DNS fallback.": "Разрешать эти имена через выбранный узел без перехода на публичный DNS.",
+  "Local core API": "Локальный API ядра",
+  "Local core API port": "Порт локального API ядра",
+  "Enable authenticated loopback commands for Tailscale status and login. Requires a private Clash API secret.": "Включить локальные команды с аутентификацией для статуса и входа Tailscale. Требуется собственный секрет Clash API.",
+  "Loopback gRPC port used by this launcher.": "Локальный порт gRPC этого экземпляра лаунчера."
 }

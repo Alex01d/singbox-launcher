@@ -947,6 +947,9 @@ func GenerateOutboundsFromParserConfig(
 		{
 			kept := nodesFromSource[:0]
 			for _, n := range nodesFromSource {
+				if refusal := nodeflow.NodeCoreBuildFailure(n.Scheme, n.Outbound, buildCore); refusal != nil {
+					return nil, fmt.Errorf("%s: %s", refusal.Code, refusal.Reason)
+				}
 				if refusal := nodeflow.NodeCoreRefusal(n.Scheme, n.Outbound, buildCore); refusal != nil {
 					skippedCoreHere++
 					coreSkips.add(n.Scheme, refusal)

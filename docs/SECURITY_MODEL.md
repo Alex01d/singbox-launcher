@@ -289,3 +289,15 @@ Each item is a recorded decision, not an oversight.
 | [141](../SPECS/141-F-N-DAEMON_MODE_WINDOWS/SPEC.md) | Windows: daemon service and protected copy |
 | [150](../SPECS/150-B-C-WINDOWS_PRIVILEGED_GATE_WARNING/SPEC.md) | Windows: a warning in place of a refusal |
 | [151](../SPECS/151-B-O-MACOS_PRIVILEGED_SHELL_NOT_ROOT/SPEC.md) | macOS: the start shell ran without `root` |
+
+## SPEC 175 — optional Linux classic command API
+
+The optional desktop_command_api service binds a literal loopback address and
+requires a private non-placeholder secret. Its unprivileged Linux client reads
+only this launcher's generated config and authenticates both RPC kinds with
+Bearer metadata. No external listener, privileged file writer or new elevation
+path is added. Unknown AWG capability rejects a whole config before node/field
+removal; marker-3 backup prevents old consumers silently stripping its guards.
+The engineering SINGBOX_LAUNCHER_ISOLATED=1 mode skips foreign process-name
+termination prompts and adapter cleanup; Stop/Restart keep existing own-child
+PID handling. This opt-in does not grant privileges.

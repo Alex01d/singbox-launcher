@@ -1495,3 +1495,14 @@ OpenConnectSubmitForm / OpenConnectSubmitBrowser / OpenConnectCancel
   listener are on this computer and the machine's core receives only the URL
   string. Cookie/header SSO (AnyConnect) is not supported: the dialog says so
   and sends nothing.
+
+## SPEC 175 — Linux embedded Tailscale AWG
+
+The registry owns an atomic JSON awg field and fatal fail_build capability gate.
+The profile stays intact through state, generation and marker-3 backup. Static
+protected CIDR/private-DNS rules do not depend on a logged-in network map.
+Linux LegacyBackend subscribes to the existing core StartedService over an
+authenticated loopback API; unary controls share that channel. No new root
+service or VPN session is installed. Transport status separates configured
+from applied mode. The portable engineering launcher uses its own paths and
+only its tracked child process; UI acceptance remains pending.

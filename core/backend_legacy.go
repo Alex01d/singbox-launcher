@@ -1,16 +1,28 @@
 package core
 
+import (
+	"context"
+	"sync/atomic"
+
+	"singbox-launcher/core/services"
+)
+
 // LegacyBackend — классический движок: делегирует в ProcessService ровно те
 // же вызовы, которые раньше делали package-level обёртки. Поведение старого
 // режима не меняется ни на байт: вся логика (диалоги, привилегированный
 // запуск, Monitor, авто-перезапуск) остаётся внутри ProcessService.
 type LegacyBackend struct {
-	ac *AppController
+	ac          *AppController
+	tailCache   services.TailscaleStatusCache
+	tailCancel  context.CancelFunc
+	tailEnabled atomic.Bool
 }
 
 // NewLegacyBackend constructs the classic spawn backend.
 func NewLegacyBackend(ac *AppController) *LegacyBackend {
-	return &LegacyBackend{ac: ac}
+	b := &LegacyBackend{ac: ac}
+	b.startTailscaleAPI()
+	return b
 }
 
 // Mode implements CoreBackend.
@@ -39,6 +51,9 @@ func (b *LegacyBackend) OnAppExit() bool {
 	return true
 }
 
-// Close implements CoreBackend. Nothing to release: ProcessService живёт в
-// контроллере и не имеет фоновых ресурсов, привязанных к режиму.
-func (b *LegacyBackend) Close() {}
+// Close releases the classic backend's local Tailscale status subscription.
+func (b *LegacyBackend) Close() {
+	if b.tailCancel != nil {
+		b.tailCancel()
+	}
+}

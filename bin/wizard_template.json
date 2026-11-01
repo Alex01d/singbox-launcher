@@ -36,6 +36,22 @@
   },
   "vars": [
     {
+      "name": "desktop_command_api",
+      "type": "bool",
+      "wizard_ui": "edit",
+      "title": "Local core API",
+      "tooltip": "Enable authenticated loopback commands for Tailscale status and login. Requires a private Clash API secret.",
+      "default_value": "false"
+    },
+    {
+      "name": "desktop_command_api_port",
+      "type": "number",
+      "wizard_ui": "edit",
+      "title": "Local core API port",
+      "tooltip": "Loopback gRPC port used by this launcher.",
+      "default_value": "19143"
+    },
+    {
       "name": "tun",
       "type": "bool",
       "wizard_ui": "edit",
@@ -450,6 +466,20 @@
     }
   ],
   "config": {
+      "services": [
+        {
+          "#if": [
+            "@desktop_command_api",
+            {
+              "type": "api",
+              "tag": "lx-desktop-api",
+              "listen": "127.0.0.1",
+              "listen_port": "@desktop_command_api_port",
+              "secret": "@clash_secret"
+            }
+          ]
+        }
+      ],
     "log": {"level": "@log_level", "timestamp": true},
     "certificate": {"store": "@cert_store"},
     "dns": {
@@ -755,6 +785,121 @@
           ]
         }
       ]
+    },
+    {
+      "id": "tailscale-protected",
+      "label": "Protected Tailscale networks",
+      "description": "Keep these networks and private names on the selected Tailscale endpoint, including before login and during outages. Choose the endpoint explicitly.",
+      "default_enabled": false,
+      "num": 944,
+      "vars": [
+        {
+          "name": "out",
+          "type": "outbound",
+          "default": "select-tailscale-endpoint",
+          "required": true,
+          "title": "Tailscale endpoint",
+          "tooltip": "Select the Tailscale endpoint that owns these networks."
+        },
+        {
+          "name": "protected_cidrs",
+          "type": "text_list",
+          "default": "",
+          "title": "Protected CIDRs",
+          "tooltip": "One CIDR per line. These networks must never fall back to direct or VLESS."
+        },
+        {
+          "name": "private_dns_suffixes",
+          "type": "text_list",
+          "default": "",
+          "title": "Private DNS suffixes",
+          "tooltip": "One suffix per line. Resolve these names through the selected endpoint without public DNS fallback."
+        }
+      ],
+      "rules": [
+        {
+          "#if": [
+            {
+              "@protected_cidrs": "#notEmpty"
+            },
+            {
+              "ip_cidr": [
+                "@protected_cidrs"
+              ],
+              "action": "route",
+              "outbound": "@out"
+            }
+          ]
+        },
+        {
+          "#if": [
+            {
+              "@private_dns_suffixes": "#notEmpty"
+            },
+            {
+              "domain_suffix": [
+                "@private_dns_suffixes"
+              ],
+              "action": "resolve",
+              "server": {
+                "#tpl": "@{out}-protected-dns"
+              }
+            }
+          ]
+        },
+        {
+          "#if": [
+            {
+              "@private_dns_suffixes": "#notEmpty"
+            },
+            {
+              "domain_suffix": [
+                "@private_dns_suffixes"
+              ],
+              "action": "route",
+              "outbound": "@out"
+            }
+          ]
+        }
+      ],
+      "dns_servers": [
+        {
+          "type": "tailscale",
+          "tag": {
+            "#tpl": "@{out}-protected-dns"
+          },
+          "endpoint": "@out"
+        }
+      ],
+      "dns_rules": [
+        {
+          "#if": [
+            {
+              "@private_dns_suffixes": "#notEmpty"
+            },
+            {
+              "domain_suffix": [
+                "@private_dns_suffixes"
+              ],
+              "server": {
+                "#tpl": "@{out}-protected-dns"
+              }
+            }
+          ]
+        }
+      ],
+      "for_each_node": {
+        "#filter": {
+          "#and": [
+            {
+              "@node.body.type": "tailscale"
+            },
+            {
+              "@node": "@out"
+            }
+          ]
+        }
+      }
     },
     {
       "id": "tailscale",

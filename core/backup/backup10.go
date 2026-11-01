@@ -37,13 +37,17 @@ import (
 // намеренно — два способа сказать «какой это формат» разошлись бы.
 const FormatVersion10 = 2
 
+// FormatVersionAtomic requires consumers that preserve atomic transport profiles.
+const FormatVersionAtomic = 3
+
 // Backup10 — корень файла 1.0. Порядок полей = порядок ключей в файле
 // (encoding/json пишет struct по объявлению): файл читают и правят руками, и
 // перестановка ключей между версиями лаунчера была бы шумом в diff'ах.
 type Backup10 struct {
-	LxBackup   int        `json:"lx_backup"`
-	ExportedBy ExportedBy `json:"exported_by"`
-	ExportedAt string     `json:"exported_at"`
+	Requires   *BackupRequirements `json:"requires,omitempty"`
+	LxBackup   int                 `json:"lx_backup"`
+	ExportedBy ExportedBy          `json:"exported_by"`
+	ExportedAt string              `json:"exported_at"`
 
 	// Sources — записи состояния: union по kind (server | folder |
 	// subscription | chain), у папки nodes[] внутри. Плоского servers[] с

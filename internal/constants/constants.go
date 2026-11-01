@@ -95,6 +95,8 @@ const (
 	// (SPEC 135 §3.3: env → Data/bin → App/bin → PATH). Срабатывает, только
 	// если файл существует.
 	EnvCorePath = "SINGBOX_LAUNCHER_CORE"
+	// EnvIsolatedCore disables foreign-process discovery for engineering bundles.
+	EnvIsolatedCore = "SINGBOX_LAUNCHER_ISOLATED"
 	// MigratedFromMarkerFileName — маркер в DataDir после миграции данных из
 	// старой раскладки (SPEC 135 §3.4).
 	MigratedFromMarkerFileName = ".migrated_from"

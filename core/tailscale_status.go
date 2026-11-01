@@ -67,6 +67,9 @@ func (ac *AppController) tailscaleSource(t TailscaleTarget) (tailscaleSource, bo
 		return src, ok
 	}
 	src, ok := ac.Backend().(tailscaleSource)
+	if enabled, supports := src.(interface{ TailscaleAPIEnabled() bool }); supports && !enabled.TailscaleAPIEnabled() {
+		return nil, false
+	}
 	return src, ok
 }
 
