@@ -135,3 +135,5 @@
 - **165** — баг исправлен (B-C, 2026-10-13): MACHINE_REFRESH_PERSISTS_TO_LOCAL_STATE — Refresh подписки в Конфигураторе машины закрепляет результат в локальном `state.json` (путь без цели в `persistFetchResultForSource`); при общем ID источника перезаписывает локальные узлы, иначе молча пропускает; **SPECS/165-B-C-MACHINE_REFRESH_PERSISTS_TO_LOCAL_STATE/SPEC.md**
 
 Подробное описание каждой задачи — в SPEC.md соответствующей папки.
+
+- **175** — в работе (F-O): TAILSCALE_AWG_LINUX — неделимый AWG-профиль embedded Tailscale, fatal capability gate, profile UI и protected subnet/DNS guards; отдельный Linux bundle. **SPECS/175-F-O-TAILSCALE_AWG_LINUX/SPEC.md**.

@@ -91,6 +91,9 @@ func triggerGhostTunCleanup() {
 // Пропускаем, если sing-box уже запущен — иначе снесём активный адаптер.
 // Не блокирует UI (фоновая goroutine, без задержки — stale уже давно мёртвые).
 func (svc *ProcessService) CleanupStaleTunAtStart() {
+	if isolatedCoreSession() {
+		return
+	}
 	if found, pid := svc.isSingBoxProcessRunning(); found {
 		debuglog.WarnLog("CleanupStaleTunAtStart: skipped (sing-box already running PID=%d)", pid)
 		return
@@ -763,6 +766,9 @@ func (svc *ProcessService) CheckIfRunningAtStart() {
 // checkAndShowSingBoxRunningWarning checks if sing-box is running and shows warning dialog if found.
 // Returns true if process was found and warning was shown, false otherwise.
 func (svc *ProcessService) checkAndShowSingBoxRunningWarning(ctx string) bool {
+	if isolatedCoreSession() {
+		return false
+	}
 	found, foundPID := svc.isSingBoxProcessRunning()
 	if found {
 		debuglog.DebugLog("%s: Found sing-box process already running (PID=%d). Showing warning dialog.", ctx, foundPID)
@@ -855,6 +861,15 @@ func (svc *ProcessService) IsSingBoxProcessRunningOnSystem() (bool, int) {
 // Returns (isRunning, pid) tuple.
 func (svc *ProcessService) isSingBoxProcessRunning() (bool, int) {
 	ourPID := svc.getTrackedPID()
+	if isolatedCoreSession() {
+		if ourPID > 0 {
+			_, found, err := process.FindProcess(ourPID)
+			if err == nil && found {
+				return true, ourPID
+			}
+		}
+		return false, -1
+	}
 
 	if runtime.GOOS == "darwin" {
 		// Аргумент-чувствительная проверка (pgrep -f по тому же паттерну,

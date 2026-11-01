@@ -49,6 +49,7 @@ var registryFieldTypes = map[string]bool{
 	"listable_string": true,
 	"string_array":    true,
 	"object":          true,
+	"json":            true, // Atomic JSON value, contract 1.2.0.
 	"enum":            true,
 	"ref":             true,
 	"array":           true,
@@ -1177,8 +1178,8 @@ func checkCoreGates(t *testing.T, files map[string]*registryBodyFile, codes map[
 		if a == nil {
 			return
 		}
-		if a.Action != "drop_node" {
-			t.Errorf("%s: on_core_unsupported.action %q — есть только drop_node", where, a.Action)
+		if a.Action != "drop_node" && a.Action != "fail_build" {
+			t.Errorf("%s: on_core_unsupported.action %q — ожидается drop_node или fail_build", where, a.Action)
 		}
 		if a.Code == "" || !codes[a.Code] {
 			t.Errorf("%s: on_core_unsupported.code %q нет в warnings.json", where, a.Code)

@@ -85,6 +85,7 @@ func ShowAddServerDialog(presenter *wizardpresentation.WizardPresenter, owner fy
 		return
 	}
 	addWindow := controller.UIService.Application.NewWindow(locale.T("Add server"))
+	f.ts.awg.Parent = addWindow
 
 	submit := func() {
 		res, err := f.result()

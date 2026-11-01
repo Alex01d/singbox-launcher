@@ -51,6 +51,7 @@ import (
 	"singbox-launcher/internal/locale"
 	"singbox-launcher/internal/nodewarn"
 	wizardmodels "singbox-launcher/ui/configurator/models"
+	"singbox-launcher/ui/configurator/tailscalewidgets"
 )
 
 // tailscaleBlockNoteText — пояснение под полями блока (ключ = английский
@@ -287,8 +288,45 @@ func newTailscaleBlock(
 	b.exitRow = container.NewBorder(nil, nil, widget.NewLabel(locale.T("Exit node")), nil, b.exitNode)
 	// Галка-переключатель роли стоит НАД тем, что от неё зависит: скрытая ею
 	// строка лежит ниже, и переключение не двигает саму галку под курсором.
+	editAWG := widget.NewButton(locale.T("Edit AWG profile"), func() {
+		node := nodeRef()
+		if node == nil {
+			return
+		}
+		var ob map[string]interface{}
+		if err := json.Unmarshal(node.Body, &ob); err != nil {
+			dialog.ShowError(err, win)
+			return
+		}
+		editor := tailscalewidgets.NewProfileEditor(nil)
+		editor.Parent = win
+		editor.Load(ob["awg"])
+		dialog.ShowCustomConfirm(locale.T("AWG profile"), locale.T("Save"), locale.T("Cancel"), container.NewVScroll(editor.Box), func(save bool) {
+			if !save {
+				return
+			}
+			profile, err := editor.Value()
+			if err != nil {
+				dialog.ShowError(err, win)
+				return
+			}
+			if profile == nil {
+				delete(ob, "awg")
+			} else {
+				ob["awg"] = profile
+			}
+			if err := writeTailscaleBody(node, ob); err != nil {
+				dialog.ShowError(err, win)
+				return
+			}
+			if onApplied != nil {
+				onApplied()
+			}
+		}, win)
+	})
 	b.content = container.NewVBox(
 		sectionHeader(locale.T("Tailscale")),
+		editAWG,
 		b.advExit,
 		b.exitRow,
 		note,

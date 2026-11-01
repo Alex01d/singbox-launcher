@@ -335,6 +335,9 @@ func hasNonSortablePreset(presets []template.Preset) bool {
 // Skipped rule_sets (remote .srs не cached) пропускаются; dangling rule_set
 // refs в routing rule уже очищены resolver'ом через cleanDanglingRuleSetInRule.
 func MergePresetsIntoRoute(routeRaw json.RawMessage, ctx PresetMergeContext) (json.RawMessage, error) {
+	if err := validateTailscaleProtected(ctx); err != nil {
+		return nil, err
+	}
 	// SPEC 106: пустой список правил больше не повод выйти сразу — в шаблоне
 	// могут быть неотчуждаемые пресеты, которые обязан вернуть re-seed
 	// (D-050). Выходим, только если и правил нет, и сеять нечего.
@@ -429,6 +432,9 @@ func MergePresetsIntoRoute(routeRaw json.RawMessage, ctx PresetMergeContext) (js
 // Dangling rule_set refs в dns rules (kind=user и пресетных, SPEC 153)
 // чистятся через cleanDanglingDNSRule.
 func MergePresetsIntoDNS(dnsRaw json.RawMessage, ctx PresetMergeContext) (json.RawMessage, error) {
+	if err := validateTailscaleProtected(ctx); err != nil {
+		return nil, err
+	}
 	// ResolveDNS — единая точка резолва. Принимает state-like контекст
 	// (RulesV6 + DNS), строит ResolvedDNS на лету.
 	st := &state.State{Rules: ctx.Rules, DNS: ctx.DNS}

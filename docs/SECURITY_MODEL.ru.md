@@ -288,3 +288,14 @@ Windows 7 всегда работает от администратора.
 | [141](../SPECS/141-F-N-DAEMON_MODE_WINDOWS/SPEC.md) | Windows: служба демона и защищённая копия |
 | [150](../SPECS/150-B-C-WINDOWS_PRIVILEGED_GATE_WARNING/SPEC.md) | Windows: предупреждение вместо отказа |
 | [151](../SPECS/151-B-O-MACOS_PRIVILEGED_SHELL_NOT_ROOT/SPEC.md) | macOS: шелл старта работал без `root` |
+
+## SPEC 175 — optional Linux classic command API
+
+Опциональный desktop_command_api слушает только literal loopback и требует
+private secret (пустой/публичный placeholder отвергается). User-level клиент
+читает только generated config этого launcher и передаёт Bearer metadata для
+RPC/stream. Нового внешнего listener, root writer или elevation path нет.
+Unknown AWG capability блокирует конфиг до downgrade, backup marker 3 заставляет
+старые приложения отвергнуть перенос целиком. Engineering env
+SINGBOX_LAUNCHER_ISOLATED=1 исключает чужие процессы/adapter cleanup; штатный
+Stop/Restart адресует только собственный child PID. Новых прав opt-in не даёт.

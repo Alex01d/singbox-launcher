@@ -11,6 +11,7 @@ package ui
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -77,6 +78,9 @@ func tailnetLines(st services.TailscaleStatus, ok bool, err error, now time.Time
 		return []string{"not-running"}
 	}
 	lines := append([]string(nil), st.Health...)
+	if tr := st.Transport; tr != nil {
+		lines = append(lines, fmt.Sprintf("transport:%s:%s:%s:%s:%t:%s", tr.ConfiguredMode, tr.AppliedMode, tr.ProfileID, tr.ProfileFingerprint, tr.Applied, tr.LastError))
+	}
 	if st.ExitNode != nil {
 		lines = append(lines, "exit:"+tailnetPeerDetails(*st.ExitNode, now)+st.ExitNode.HostName)
 	} else {
@@ -146,6 +150,19 @@ func buildTailnetSection(box *fyne.Container, st services.TailscaleStatus, ok bo
 		return
 	}
 
+	if tr := st.Transport; tr != nil {
+		note(locale.Tf("Peer transport: configured %s, applied %s", tr.ConfiguredMode, tr.AppliedMode), widget.MediumImportance)
+		if tr.ProfileID != "" {
+			note(locale.Tf("AWG profile: %s", tr.ProfileID), widget.LowImportance)
+		}
+		if tr.ProfileFingerprint != "" {
+			note(locale.Tf("Profile fingerprint: %s", tr.ProfileFingerprint), widget.LowImportance)
+		}
+		if tr.LastError != "" {
+			note(tr.LastError, widget.WarningImportance)
+		}
+		note(locale.T("Transport configuration does not prove peer reachability."), widget.LowImportance)
+	}
 	for _, h := range st.Health {
 		note(h, widget.WarningImportance)
 	}

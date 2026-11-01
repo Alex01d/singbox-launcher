@@ -1002,3 +1002,13 @@ Windows-бинари несут манифест `asInvoker` (он остаёт�
   поэтому эндпоинта рецептов нет. `core_outdated` считает замыкание
   `RemoteAPI.CoreOutdated`, проведённое в `core`, — `debugapi` не может импортировать
   `core`.
+
+## SPEC 175 — Linux embedded Tailscale AWG
+
+Registry владеет неделимым awg JSON и fail_build capability gate. Profile
+сохраняется через state/generator/backup marker 3. Статические CIDR/DNS guards
+не зависят от login или live network map. LegacyBackend подписывается на
+существующий StartedService через авторизованный loopback API: один stream/cache,
+общие unary controls, без нового root service. Configured/applied status разделён.
+Engineering portable использует собственные paths и только свой tracked child;
+ручная UI-приёмка впереди.

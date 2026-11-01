@@ -87,7 +87,17 @@ type TailscaleUserGroup struct {
 }
 
 // TailscaleStatus — состояние одного tailscale-endpoint'а.
+type TailscaleTransportStatus struct {
+	ConfiguredMode     string
+	AppliedMode        string
+	ProfileID          string
+	ProfileFingerprint string
+	Applied            bool
+	LastError          string
+}
+
 type TailscaleStatus struct {
+	Transport    *TailscaleTransportStatus
 	EndpointTag  string
 	BackendState string
 	// StateText — текст состояния ядра; UI берёт его только для значения
@@ -159,6 +169,9 @@ func TailscaleEndpointStatusFromPB(ep *daemonpb.TailscaleEndpointStatus, at time
 		ExitNode:       tailscalePeerFromPB(ep.GetExitNode()),
 		Health:         ep.GetHealth(),
 		ReceivedAt:     at,
+	}
+	if tr := ep.GetTransport(); tr != nil {
+		st.Transport = &TailscaleTransportStatus{ConfiguredMode: tr.GetConfiguredMode(), AppliedMode: tr.GetAppliedMode(), ProfileID: tr.GetProfileID(), ProfileFingerprint: tr.GetProfileFingerprint(), Applied: tr.GetApplied(), LastError: tr.GetLastError()}
 	}
 	for _, g := range ep.GetUserGroups() {
 		if g == nil {

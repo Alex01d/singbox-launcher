@@ -19,6 +19,7 @@ import (
 	"singbox-launcher/core/config/nodeflow"
 	"singbox-launcher/internal/locale"
 	"singbox-launcher/internal/nodewarn"
+	"singbox-launcher/ui/configurator/tailscalewidgets"
 )
 
 // addServerTailscaleNoteText — подсказка под полем ключа. Текст нормативный
@@ -50,6 +51,7 @@ func tailscaleTag(raw string) string {
 
 // tailscaleFields — виджеты варианта.
 type tailscaleFields struct {
+	awg        *tailscalewidgets.ProfileEditor
 	authKey    *widget.Entry
 	controlURL *widget.Entry
 	hostname   *widget.Entry
@@ -70,6 +72,7 @@ type tailscaleFields struct {
 // — им форма пересчитывает превью JSON.
 func buildTailscaleFields(onChange func()) *tailscaleFields {
 	t := &tailscaleFields{}
+	t.awg = tailscalewidgets.NewProfileEditor(onChange)
 
 	// Ключ — секрет: password entry. Маскируется только показ; в теле узла и
 	// в бэкапе он лежит открыто, как ключи WireGuard («секреты в state — by
@@ -119,6 +122,7 @@ func buildTailscaleFields(onChange func()) *tailscaleFields {
 		note,
 		labeledRow(locale.T("Control URL"), t.controlURL),
 		labeledRow(locale.T("Hostname"), t.hostname),
+		t.awg.Box,
 		t.ephemeral,
 		t.acceptRts,
 		widget.NewSeparator(),
@@ -156,14 +160,20 @@ func (t *tailscaleFields) syncExitRole() {
 func tailscaleDocument(tag string, t *tailscaleFields) ([]byte, error) {
 	tag = tailscaleTag(tag)
 	key := strings.TrimSpace(t.authKey.Text)
-	if key == "" {
-		return nil, fmt.Errorf("%s", locale.T("Auth key is required"))
-	}
 
 	endpoint := map[string]interface{}{
-		"type":     "tailscale",
-		"tag":      tag,
-		"auth_key": key,
+		"type": "tailscale",
+		"tag":  tag,
+	}
+	if key != "" {
+		endpoint["auth_key"] = key
+	}
+	profile, err := t.awg.Value()
+	if err != nil {
+		return nil, err
+	}
+	if profile != nil {
+		endpoint["awg"] = profile
 	}
 	putIfNotEmpty(endpoint, "control_url", t.controlURL.Text)
 	putIfNotEmpty(endpoint, "hostname", t.hostname.Text)

@@ -128,21 +128,21 @@ type Field struct {
 	NormalizeCode string `json:"normalize_code"`
 
 	// Поведение.
-	Required     bool        `json:"required"`
+	Required bool `json:"required"`
 	// RequiredUnless — когда обязательность отсутствующего поля снимается
 	// (контракт 1.1.110). Без него required безусловен.
 	RequiredUnless *RequiredUnless `json:"required_unless"`
-	Secret       bool        `json:"secret"`
-	Tristate     bool        `json:"tristate"`
-	AllOrNothing bool        `json:"all_or_nothing"`
-	Managed      bool        `json:"managed"`
-	Deprecated   bool        `json:"deprecated"`
-	Skip         string      `json:"skip"`
-	Default      interface{} `json:"default"`
-	OnInvalid    *OnInvalid  `json:"on_invalid"`
-	Advisory     []Advisory  `json:"advisory"`
-	DropAlways   bool        `json:"drop_always"`
-	Aliases      interface{} `json:"aliases"`
+	Secret         bool            `json:"secret"`
+	Tristate       bool            `json:"tristate"`
+	AllOrNothing   bool            `json:"all_or_nothing"`
+	Managed        bool            `json:"managed"`
+	Deprecated     bool            `json:"deprecated"`
+	Skip           string          `json:"skip"`
+	Default        interface{}     `json:"default"`
+	OnInvalid      *OnInvalid      `json:"on_invalid"`
+	Advisory       []Advisory      `json:"advisory"`
+	DropAlways     bool            `json:"drop_always"`
+	Aliases        interface{}     `json:"aliases"`
 
 	// Role — роль поля в узле (контракт 1.1.59): по ней общий код находит
 	// поле, не зная имени схемы. Только у поля верхнего уровня тела
@@ -338,6 +338,9 @@ type OnCoreUnsupported struct {
 
 // CoreUnsupportedDropNode — действие OnCoreUnsupported: снять узел.
 const CoreUnsupportedDropNode = "drop_node"
+
+// CoreUnsupportedFailBuild preserves security-sensitive configuration atomically.
+const CoreUnsupportedFailBuild = "fail_build"
 
 // RangeForm — требования формы-диапазона («N-M») значения awg_range, у
 // которой своя граница ядра и свой уровень (контракт 1.1.60). Числовая форма
